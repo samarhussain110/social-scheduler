@@ -1,138 +1,115 @@
-# Social Scheduler
+# 📅 Social Scheduler
 
-A Laravel web application for connecting social accounts, preparing posts with optional media, and scheduling posts for Facebook, Instagram, and LinkedIn.
+### Auto-Schedule & Publish Social Media Posts
 
-## Features
+A modern Laravel-based social media scheduling platform that allows users to connect their social media accounts, create posts, schedule content, and manage publishing from one centralized dashboard.
 
-- User registration, login, profile management, and authenticated post management.
-- Connect Facebook, Instagram, and LinkedIn accounts through their OAuth flows.
-- Create, edit, view, cancel, and delete scheduled posts.
-- Schedule in a selected timezone; store scheduled times in UTC and display them in the selected timezone.
-- Upload images and videos to Laravel's public storage disk and preview media with posts.
-- Check due posts every minute and dispatch platform-specific publishing jobs.
-- Track scheduled, pending, publishing, published, failed, and cancelled post states.
-- View notifications and activity logs.
+---
 
-## Requirements
+## 🌐 Live Demo
 
-- PHP 8.2 or later with the extensions required by Laravel 12.
-- Composer.
-- A database supported by the configured Laravel connection (the project environment determines which one is used).
-- Node.js and npm for frontend assets.
-- OAuth applications and valid credentials for each social platform you intend to connect.
+🚀 **[View Live Project](https://samarhussain110.github.io/social-scheduler/)**
 
-## Local setup
+> Click the button above to explore the live project.
 
-1. Install PHP dependencies:
+---
 
-   ```bash
-   composer install
-   ```
+## ✨ Highlights
 
-2. Create your local environment file and application key:
+- 🔐 Secure user authentication
+- 🔗 Facebook, Instagram & LinkedIn account integration
+- 📝 Create and manage social media posts
+- 📅 Schedule posts for specific dates and times
+- 🚀 Automatic social media publishing
+- 📊 Dashboard with post and account status
+- 🖼️ Media support for posts
+- ❌ Failed post status and error tracking
+- 👤 User profile management
+- 🔄 Edit and manage scheduled posts
 
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
+---
 
-   On Windows PowerShell, use `Copy-Item .env.example .env` instead of `cp`.
+## 🖥️ Project Preview
 
-3. Configure `.env` with your application URL, database connection, session/cache settings, and social OAuth credentials. Do not commit `.env` or expose access tokens and client secrets.
+The Social Scheduler provides a centralized dashboard where users can manage connected social media accounts and scheduled content.
 
-   The social integration settings used by the application are:
+### Main Features
 
-   | Platform | Environment keys |
-   | --- | --- |
-   | Facebook | `FACEBOOK_CLIENT_ID`, `FACEBOOK_CLIENT_SECRET`, `FACEBOOK_REDIRECT_URI` |
-   | Instagram | `INSTAGRAM_CLIENT_ID`, `INSTAGRAM_CLIENT_SECRET`, `INSTAGRAM_REDIRECT_URI` |
-   | LinkedIn | `LINKEDIN_CLIENT_ID`, `LINKEDIN_CLIENT_SECRET`, `LINKEDIN_REDIRECT_URI` |
+| Feature | Description |
+|---|---|
+| 🔐 Authentication | Register, Login & Account Management |
+| 🔗 Connected Accounts | Connect Facebook, Instagram & LinkedIn |
+| 📝 Create Post | Create content with media |
+| 📅 Scheduling | Schedule posts for future publishing |
+| 🚀 Publishing | Automatically publish scheduled content |
+| 📊 Dashboard | Monitor post and account status |
+| ❌ Failed Posts | Track unsuccessful publishing attempts |
+| 👤 Profile | Manage user profile |
 
-   Set each provider's registered callback URL to match the configured application URL and redirect URI:
+---
 
-   - Facebook: `/auth/facebook/callback`
-   - Instagram: `/auth/instagram/callback`
-   - LinkedIn: `/auth/linkedin/callback`
+## 📱 Supported Platforms
 
-4. Create/configure the database, then run migrations when setting up a new or intentionally unmigrated database:
+| Platform | Connection | Publishing |
+|---|---:|---:|
+| Facebook | ✅ | ✅ Facebook Pages |
+| Instagram | ✅ | ✅ |
+| LinkedIn | ✅ | ✅ |
 
-   ```bash
-   php artisan migrate
-   ```
+> Publishing availability depends on the permissions and restrictions of each platform's official API.
 
-   Do not run migrations against an existing database unless you have reviewed the pending migrations and have an appropriate backup.
+---
 
-5. Install frontend dependencies and build assets:
+## 🛠️ Technologies
 
-   ```bash
-   npm install
-   npm run build
-   ```
+**Backend**
+- PHP
+- Laravel
 
-6. Create the standard public-storage link for uploaded post media:
+**Frontend**
+- Blade
+- HTML5
+- CSS3
+- JavaScript
+- Tailwind CSS
 
-   ```bash
-   php artisan storage:link
-   ```
+**Database**
+- MySQL
+- Laravel Eloquent ORM
 
-## Run locally
+**APIs & Authentication**
+- Facebook API
+- Instagram API
+- LinkedIn API
+- OAuth 2.0
 
-Start each process in its own terminal:
+**Tools**
+- Git
+- GitHub
+- Composer
+- NPM
+- Vite
+- XAMPP
 
-```bash
-php artisan serve
+---
 
-```
-ngrok http 8000 
+## 🔄 How It Works
 
-```bash
-npm run dev
-```
-
-```bash
-php artisan queue:work
-```
-
-```bash
-php artisan schedule:work
-```
-
-The scheduler runs `posts:check-scheduled` every minute. That command finds due posts and dispatches the appropriate publishing job. The queue worker processes dispatched jobs; both the scheduler and worker must be running for automatic scheduled publishing. The queue connection is controlled by `QUEUE_CONNECTION` (the Laravel configuration defaults to the database queue).
-
-For a production deployment, configure Laravel's scheduler to invoke `php artisan schedule:run` every minute and keep a queue worker running under a process manager.
-
-## Scheduling and publishing
-
-- A post is saved with its selected timezone and scheduled instant converted to UTC.
-- The due-post command selects due `scheduled` or `pending` posts and dispatches a Facebook, Instagram, or LinkedIn job.
-- Publishing results and errors are reflected in the post status and related post metadata.
-- Facebook OAuth requests the Page permissions `pages_show_list`, `pages_read_engagement`, and `pages_manage_posts`. Publishing uses the first manageable Page returned by Facebook for the connected account.
-- Instagram publishing requires at least one image or video.
-- Post media is stored on Laravel's `public` disk under `storage/app/public`; the `public/storage` link makes it available to the application.
-
-Social platforms can change API requirements, permissions, and account eligibility. Configure and authorize each integration in the provider's developer portal before connecting it in the application.
-
-## Tests
-
-Run the automated test suite with:
-
-```bash
-php artisan test
-```
-
-Tests that exercise external social APIs should use mocked HTTP responses; use real platform credentials only for a deliberate integration test.
-
-## Project layout
-
-- `app/Http/Controllers` — web, post, account, and social OAuth controllers.
-- `app/Models` — users, social accounts, scheduled posts, post media, and related records.
-- `app/Jobs` — Facebook, Instagram, and LinkedIn publishing jobs.
-- `app/Console/Commands/CheckScheduledPosts.php` — finds due posts and dispatches publishing jobs.
-- `routes/web.php` — web, authentication-protected post, account, and OAuth routes.
-- `routes/console.php` — scheduled command definitions.
-- `resources/views` — Blade pages and shared layouts.
-- `database/migrations` — database schema definitions.
-
-## License
-
-This application includes Laravel and other open-source dependencies. See the relevant package licenses and repository files for licensing information.
+```text
+Login / Register
+       ↓
+Dashboard
+       ↓
+Connect Social Accounts
+       ↓
+Create Post
+       ↓
+Select Platform
+       ↓
+Schedule Post
+       ↓
+Scheduled Post
+       ↓
+Automatic Publishing
+       ↓
+Published / Failed
