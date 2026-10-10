@@ -6,11 +6,6 @@ A modern Laravel-based social media scheduling platform that allows users to con
 
 ---
 
-## 🌐 Live Demo
-
-🚀 **[View Live Project](https://samarhussain110.github.io/social-scheduler/)**
-
-> Click the button above to explore the live project.
 
 ---
 
